@@ -14,12 +14,12 @@ import (
 )
 
 const (
-	statDir   = "./static"
-	srcDir    = "./seiten"
-	tmplDir   = "./templates"
-	templFile = "*.templ.html"
-	blogIndex = "index" // defined in "index.templ.html"
-	blogPage  = "page"  // defined in "page.templ.html"
+	statDir    = "./static"
+	srcDir     = "./seiten"
+	tmplDir    = "./templates"
+	templFile  = "*.templ.html"
+	indexTempl = "index" // defined in "index.templ.html"
+	pageTempl  = "page"  // defined in "page.templ.html"
 )
 
 type Page struct {
@@ -49,7 +49,7 @@ func indexHandler(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	c.HTML(http.StatusOK, blogIndex, ps)
+	c.HTML(http.StatusOK, indexTempl, ps)
 }
 
 func blogHandler(c *gin.Context) {
@@ -59,7 +59,7 @@ func blogHandler(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	c.HTML(http.StatusOK, blogPage, p)
+	c.HTML(http.StatusOK, pageTempl, p)
 }
 
 func loadPage(fpath string) (Page, error) {
