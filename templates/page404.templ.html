@@ -1,0 +1,13 @@
+{{ define "page404" }}
+<html>
+{{ template "header" .}}
+
+<body>
+<div class=container>
+   <a href="/">Home</a>
+   <h1>{{ .Title }}</h1>
+   {{ .Content }}
+</div>
+{{ template "footer" . }}
+</body>
+{{ end }}

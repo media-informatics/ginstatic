@@ -34,7 +34,7 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob(filepath.Join(tmplDir, templFile))
 	router.Static("/static", statDir)
-
+	router.NoRoute(pageNotFound)
 	router.GET("/", indexHandler)
 	router.GET("/page/:topic", blogHandler)
 	log.Print("Listening on :9000 ....")
@@ -44,10 +44,21 @@ func main() {
 	}
 }
 
+func pageNotFound(c *gin.Context) {
+	p := Page{
+		Title:       "Page not found!",
+		LastChanged: time.Now(),
+		Content:     "",
+	}
+	c.HTML(http.StatusNotFound, "page404", p)
+}
+
 func indexHandler(c *gin.Context) {
 	ps, err := loadPages(srcDir)
 	if err != nil {
 		log.Println(err)
+		pageNotFound(c)
+		return
 	}
 	c.HTML(http.StatusOK, indexTempl, ps)
 }
@@ -58,6 +69,8 @@ func blogHandler(c *gin.Context) {
 	p, err := loadPage(fpath)
 	if err != nil {
 		log.Println(err)
+		pageNotFound(c)
+		return
 	}
 	c.HTML(http.StatusOK, pageTempl, p)
 }
