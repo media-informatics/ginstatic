@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -14,9 +13,13 @@ import (
 	"github.com/russross/blackfriday/v2"
 )
 
-var (
-	srcDir = flag.String("src", "./seiten", "Inhalte-Dir.")
-	tmpDir = flag.String("tmp", "./templates", "Template-Dir.")
+const (
+	statDir   = "./static"
+	srcDir    = "./seiten"
+	tmplDir   = "./templates"
+	templFile = "*.templ.html"
+	blogIndex = "index" // defined in "index.templ.html"
+	blogPage  = "page"  // defined in "page.templ.html"
 )
 
 type Page struct {
@@ -29,8 +32,8 @@ type Pages []Page
 
 func main() {
 	router := gin.Default()
-	router.LoadHTMLGlob("./templates/*.templ.html")
-	router.Static("/static", "./static")
+	router.LoadHTMLGlob(filepath.Join(tmplDir, templFile))
+	router.Static("/static", statDir)
 
 	router.GET("/", indexHandler)
 	router.GET("/page/:topic", blogHandler)
@@ -42,23 +45,21 @@ func main() {
 }
 
 func indexHandler(c *gin.Context) {
-	const template = "index" // definiert in "index.templ.html"
-	ps, err := loadPages(*srcDir)
+	ps, err := loadPages(srcDir)
 	if err != nil {
 		log.Println(err)
 	}
-	c.HTML(http.StatusOK, template, ps)
+	c.HTML(http.StatusOK, blogIndex, ps)
 }
 
 func blogHandler(c *gin.Context) {
-	const template = "page" // definiert in "page.templ.html"
 	f := c.Param("topic")
-	fpath := filepath.Join(*srcDir, f)
+	fpath := filepath.Join(srcDir, f)
 	p, err := loadPage(fpath)
 	if err != nil {
 		log.Println(err)
 	}
-	c.HTML(http.StatusOK, template, p)
+	c.HTML(http.StatusOK, blogPage, p)
 }
 
 func loadPage(fpath string) (Page, error) {
