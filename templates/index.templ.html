@@ -1,0 +1,18 @@
+{{ define "index" }}
+<html>
+{{ template "header" .}}
+
+<body>
+<div class=container>
+    <h1>Index</h1>
+    <ul>
+        {{ range . }}
+        <li><a href="/page/{{.Title}}">{{ .Title }}
+                ({{.LastChanged.Format "02.01.2006 15:04"}})</a></li>
+        {{ end }}
+    </ul>
+</div>
+{{ template "footer" . }}
+</body>
+</html>
+{{ end }}

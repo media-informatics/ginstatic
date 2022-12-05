@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    goapp:
+      image: ginstatic:latest
+      container_name: ginstat
+      #restart: always
+      build:
+        context: .
+      ports:
+        - "9000:9000"
